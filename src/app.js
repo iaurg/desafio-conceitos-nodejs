@@ -20,9 +20,21 @@ function validateId (request, response, next) {
 
 const findRepositoryIndex = (id) => repositories.findIndex(repository => repository.id === id)
 
+function validateRepositoryIndex (request, response, next) {
+  const { id } = request.params
+
+  const repositoryIndex = findRepositoryIndex(id)
+
+  if (repositoryIndex < 0) {
+    return response.status(400).json({ error: 'Repository Not Found' })
+  }
+
+  return next()
+}
+
 const repositories = []
 
-app.use('/repositories/:id', validateId)
+app.use('/repositories/:id', validateId, validateRepositoryIndex)
 
 app.get('/repositories', (request, response) => {
   return response.status(200).json(repositories)
@@ -48,10 +60,6 @@ app.put('/repositories/:id', (request, response) => {
 
   const repositoryIndex = findRepositoryIndex(id)
 
-  if (repositoryIndex < 0) {
-    return response.status(404).json({ error: 'Repository not found' })
-  }
-
   repositories[repositoryIndex] = { ...repositories[repositoryIndex], title, url, techs }
 
   return response.status(200).json(repositories[repositoryIndex])
@@ -61,10 +69,6 @@ app.delete('/repositories/:id', (request, response) => {
   const { id } = request.params
 
   const repositoryIndex = findRepositoryIndex(id)
-
-  if (repositoryIndex < 0) {
-    return response.status(404).json({ error: 'Repository not found' })
-  }
 
   repositories.splice(repositoryIndex, 1)
 
