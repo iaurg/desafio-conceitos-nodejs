@@ -79,5 +79,8 @@ app.post('/repositories/:id/like', (request, response) => {
   const { id } = request.params
 
   const repositoryIndex = findRepositoryIndex(id)
+  repositories[repositoryIndex].likes = repositories[repositoryIndex].likes + 1
+
+  return response.status(200).json(repositories[repositoryIndex])
 })
 module.exports = app
