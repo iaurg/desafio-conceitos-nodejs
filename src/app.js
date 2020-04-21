@@ -18,6 +18,8 @@ function validateId (request, response, next) {
   return next()
 }
 
+const findRepositoryIndex = (id) => repositories.findIndex(repository => repository.id === id)
+
 const repositories = []
 
 app.use('/repositories/:id', validateId)
@@ -44,7 +46,7 @@ app.put('/repositories/:id', (request, response) => {
 
   const { title, url, techs } = request.body
 
-  const repositoryIndex = repositories.findIndex(repository => repository.id === id)
+  const repositoryIndex = findRepositoryIndex(id)
 
   if (repositoryIndex < 0) {
     return response.status(404).json({ error: 'Repository not found' })
@@ -58,7 +60,7 @@ app.put('/repositories/:id', (request, response) => {
 app.delete('/repositories/:id', (request, response) => {
   const { id } = request.params
 
-  const repositoryIndex = repositories.findIndex(repository => repository.id === id)
+  const repositoryIndex = findRepositoryIndex(id)
 
   if (repositoryIndex < 0) {
     return response.status(404).json({ error: 'Repository not found' })
@@ -70,7 +72,8 @@ app.delete('/repositories/:id', (request, response) => {
 })
 
 app.post('/repositories/:id/like', (request, response) => {
-  // TODO
-})
+  const { id } = request.params
 
+  const repositoryIndex = findRepositoryIndex(id)
+})
 module.exports = app
