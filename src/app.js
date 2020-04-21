@@ -31,7 +31,7 @@ app.post('/repositories', (request, response) => {
   const repository = {
     id: uuid(),
     title,
-    url: `https://github.com/${url}`,
+    url,
     techs,
     likes: 0
   }
